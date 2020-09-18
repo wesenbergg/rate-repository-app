@@ -1,3 +1,4 @@
+/* eslint-disable no-constant-condition */
 import React from 'react';
 import { View, StyleSheet, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import Constants from 'expo-constants';
@@ -14,19 +15,26 @@ const styles = StyleSheet.create({
   navHeader: {
     color: 'white'
   }
-  // ...
 });
 
 const AppBar = () => {
+  
   return (
   <View style={styles.container}>
     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
       <Link to="/" component={TouchableWithoutFeedback} activeOpacity={0.8} >
         <Text bold h1 light p5>Repositories</Text>
       </Link>
+
+      {true ? 
       <Link to="/signin" component={TouchableWithoutFeedback} activeOpacity={0.8} >
         <Text h1 light p5>Sign in</Text>
-      </Link>
+      </Link>:
+      <Link to="/signin" component={TouchableWithoutFeedback} activeOpacity={0.8} >
+        <Text h1 light p5>Sign out</Text>
+      </Link>}
+      
+      
     </ScrollView>
   </View>
   );
