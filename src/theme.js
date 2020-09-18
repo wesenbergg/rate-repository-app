@@ -5,7 +5,8 @@ const theme = {
     textLight: 'white',
     primary: '#0366d6',
     appbar: '#24292e',
-    profileCardBg: 'white'
+    profileCardBg: 'white',
+    error: '#d73a4a',
   },
   fontSizes: {
     body: 14,
@@ -14,6 +15,8 @@ const theme = {
   },
   fonts: {
     main: 'System',
+    ios: 'Arial',
+    android: 'Roboto'
   },
   fontWeights: {
     normal: '400',
