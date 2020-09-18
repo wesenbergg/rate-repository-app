@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Image } from 'react-native';
 import theme from '../theme';
 import Text from './Text';
+import thousandsToK from '../utils/thousandsToK';
 
 const styles = StyleSheet.create({
   item: {
@@ -46,10 +47,10 @@ const RepositoryListItem = ({ repo }) => {
       </View>
     </View>
     <View style={{flex: 1, flexDirection: "row", justifyContent: 'space-around'}}>
-      <DetailBox body="Stars" header={repo.stargazersCount} />
-      <DetailBox body="Forks" header={repo.forksCount} />
-      <DetailBox body="Reviews" header={repo.reviewCount} />
-      <DetailBox body="Rating" header={repo.ratingAverage} />
+      <DetailBox body="Stars" header={thousandsToK(repo.stargazersCount)} />
+      <DetailBox body="Forks" header={thousandsToK(repo.forksCount)} />
+      <DetailBox body="Reviews" header={thousandsToK(repo.reviewCount)} />
+      <DetailBox body="Rating" header={thousandsToK(repo.ratingAverage)} />
     </View>
 
     {/* <Text>{repo.id}</Text> */}

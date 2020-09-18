@@ -12,4 +12,4 @@ export default async function(env, argv) {
   });
 
   return config;
-};
+}
