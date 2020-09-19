@@ -9,11 +9,15 @@ const useSignIn = () => {
   const client = useApolloClient();
 
   const signIn = async ({ username, password }) => {
-    const data = await mutate({variables: {username, password}});
-    async () => (data.authorize) ? await authStorage.setAccessToken(data.authorize.accessToken): '';
-    client.resetStore();
+    const payload = await mutate({ variables: {username, password} });
+    const { data } = payload;
 
-    return data;
+    if (data && data.authorize) {
+      await authStorage.setAccessToken(data.authorize.accessToken);
+      client.resetStore();
+    }
+
+    return payload;
   };
 
   return [signIn, result];
