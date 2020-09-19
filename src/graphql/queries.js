@@ -23,7 +23,7 @@ query {
 }
 `;
 
-export const AUTHORIZATION = gql`
+export const AUTHORIZED_USER = gql`
 query{
   authorizedUser {
     id
