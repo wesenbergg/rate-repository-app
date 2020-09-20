@@ -1,5 +1,5 @@
 import { Formik } from 'formik';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import theme from '../theme';
 import FormikTextInput from './FormikTextInput';
@@ -36,18 +36,25 @@ const styles = StyleSheet.create({
   }
 });
 
-const SignInForm = ({onSubmit}) => {
-
+export const SignInForm = ({onSubmit}) => {
   return (
     <View style={styles.container}>
       <FormikTextInput style={styles.input} name="username" placeholder="Username" />
       <FormikTextInput style={styles.input} name="password" placeholder="Password" secureTextEntry />
-      <TouchableOpacity style={styles.btn} onPress={onSubmit} activeOpacity={theme.buttons.activeOpacity}>
+      <TouchableOpacity style={styles.btn} onPress={onSubmit} activeOpacity={theme.buttons.activeOpacity} testID="submitButton">
         <Text center h1 bold light>Sign In</Text>
       </TouchableOpacity>
     </View>
   );
 };
+
+export const SignInContainer = ({onSubmit}) => {
+  return(
+    <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
+      {({ handleSubmit }) =><SignInForm onSubmit={handleSubmit} />}
+    </Formik>
+  );
+}
 
 const SignIn = () => {
   const [signIn] = useSignIn();
@@ -66,9 +73,7 @@ const SignIn = () => {
   };
 
   return (
-    <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-      {({ handleSubmit }) =><SignInForm onSubmit={handleSubmit} />}
-    </Formik>
+    <SignInContainer onSubmit={onSubmit} />
   );
 };
 

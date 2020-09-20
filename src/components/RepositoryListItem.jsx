@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
 const DetailBox = ({header, body}) => {
     return(
     <View style={styles.detailBoxContainer}>
-      <Text style={{textAlign: "center"}} subheading bold>{header}</Text>
+      <Text style={{textAlign: "center"}} subheading bold testID="detailBoxHeader">{header}</Text>
       <Text style={{textAlign: "center"}} color="textSecondary">{body}</Text>
     </View>
   );
@@ -41,9 +41,9 @@ const RepositoryListItem = ({ repo }) => {
     <View style={{flexDirection: "row"}}>
       <Image style={styles.tinyLogo} source={{ uri: repo.ownerAvatarUrl }} />
       <View style={styles.headerTextContainer}>
-        <Text subheading bold>{repo.fullName}</Text>
-        <Text color="textSecondary">{repo.description}</Text>
-        <Text style={{alignSelf: 'flex-start', marginVertical: 10}} badge bold>{repo.language}</Text>
+        <Text subheading bold testID="fullName">{repo.fullName}</Text>
+        <Text color="textSecondary" testID="description">{repo.description}</Text>
+        <Text style={{alignSelf: 'flex-start', marginVertical: 10}} badge bold testID="language">{repo.language}</Text>
       </View>
     </View>
     <View style={{flex: 1, flexDirection: "row", justifyContent: 'space-around'}}>

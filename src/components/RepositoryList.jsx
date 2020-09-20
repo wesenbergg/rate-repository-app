@@ -10,25 +10,30 @@ const styles = StyleSheet.create({
 });
 
 const ItemSeparator = () => <View style={styles.separator} />;
-const renderItem = (e) => <RepositoryListItem repo={e} />;
+const renderItem = (e) => <RepositoryListItem testID="item" repo={e} />;
 
-const RepositoryList = () => {
-  const { repositories } = useRepositories();
-
-  // Get the nodes from the edges array
+export const RepositoryListContainer = ({ repositories }) => {
   const repositoryNodes = repositories
-    ? repositories.edges.map(edge => edge.node)
+    ? repositories.edges.map((edge) => edge.node)
     : [];
 
   return (
-  <SafeAreaView>
     <FlatList
+      testID="list"
       data={repositoryNodes}
       ItemSeparatorComponent={ItemSeparator}
       renderItem={(e) => renderItem(e.item)}
       keyExtractor={e => e.id}
-      // other props
     />
+  );
+};
+
+const RepositoryList = () => {
+  const { repositories } = useRepositories();
+
+  return (
+  <SafeAreaView>
+    <RepositoryListContainer repositories={repositories}/>
   </SafeAreaView>
   );
 };
