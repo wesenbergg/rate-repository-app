@@ -3,8 +3,10 @@ import { StyleSheet, View } from 'react-native';
 import { Route, Switch, Redirect } from 'react-router-native';
 // import theme from '../theme';
 import AppBar from './AppBar';
+import SingleRepo from './SingleRepo';
 import RepositoryList from './RepositoryList';
 import SignIn from './SignIn';
+import NewReviewForm from './NewReviewForm';
 
 const styles = StyleSheet.create({
   container: {
@@ -14,6 +16,17 @@ const styles = StyleSheet.create({
     // fontFamily: "Roboto",
   },
 });
+const item = {
+  id: 'jaredpalmer.formik',
+  fullName: 'jaredpalmer/formik',
+  description: 'Build forms in React, without the tears',
+  language: 'TypeScript',
+  forksCount: 1589,
+  stargazersCount: 21553,
+  ratingAverage: 88,
+  reviewCount: 4,
+  ownerAvatarUrl: 'https://avatars2.githubusercontent.com/u/4060187?v=4',
+};
 
 const Main = () => {
   return (
@@ -25,6 +38,12 @@ const Main = () => {
         </Route>
         <Route path="/signin" exact>
           <SignIn />
+        </Route>
+        <Route path="/newReview" exact>
+          <NewReviewForm />
+        </Route>
+        <Route path="/repo/:id">
+          <SingleRepo />
         </Route>
         <Redirect to="/" />
       </Switch>

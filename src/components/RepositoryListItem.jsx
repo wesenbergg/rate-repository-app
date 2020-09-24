@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet, Image, TouchableWithoutFeedback } from 'react-native';
 import theme from '../theme';
 import Text from './Text';
 import thousandsToK from '../utils/thousandsToK';
+import { Link } from 'react-router-native';
 
 const styles = StyleSheet.create({
   item: {
@@ -37,7 +38,8 @@ const DetailBox = ({header, body}) => {
 const RepositoryListItem = ({ repo }) => {
   // console.log(repo);
   return (
-  <View style={styles.item}>
+  <Link to={`/repo/${repo.id}`} component={TouchableWithoutFeedback} activeOpacity={0.8} >
+  <View style={styles.item}  >
     <View style={{flexDirection: "row"}}>
       <Image style={styles.tinyLogo} source={{ uri: repo.ownerAvatarUrl }} />
       <View style={styles.headerTextContainer}>
@@ -46,7 +48,7 @@ const RepositoryListItem = ({ repo }) => {
         <Text style={{alignSelf: 'flex-start', marginVertical: 10}} badge bold testID="language">{repo.language}</Text>
       </View>
     </View>
-    <View style={{flex: 1, flexDirection: "row", justifyContent: 'space-around'}}>
+    <View style={{ flexDirection: "row", justifyContent: 'space-around'}}>
       <DetailBox body="Stars" header={thousandsToK(repo.stargazersCount)} />
       <DetailBox body="Forks" header={thousandsToK(repo.forksCount)} />
       <DetailBox body="Reviews" header={thousandsToK(repo.reviewCount)} />
@@ -56,6 +58,7 @@ const RepositoryListItem = ({ repo }) => {
     {/* <Text>{repo.id}</Text> */}
     
   </View>
+  </Link>
   );
 };
 

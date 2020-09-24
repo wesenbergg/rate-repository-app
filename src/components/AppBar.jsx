@@ -39,9 +39,14 @@ const AppBar = () => {
       </Link>
 
       {user ? 
+      <>
+      <Link to="/newReview" component={TouchableWithoutFeedback} activeOpacity={0.8} >
+        <Text h1 light p5>New Review</Text>
+      </Link>
       <Link to="/signin" component={TouchableWithoutFeedback} activeOpacity={0.8} onPress={signOut} >
         <Text h1 light p5>Sign out</Text>
-      </Link>:
+      </Link>
+      </>:
       <Link to="/signin" component={TouchableWithoutFeedback} activeOpacity={0.8} >
         <Text h1 light p5>Sign in</Text>
       </Link>}
