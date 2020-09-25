@@ -7,10 +7,12 @@ import Text from './Text';
 import * as yup from 'yup';
 import useSignIn from '../hooks/useSignIn';
 import { useHistory } from 'react-router-native';
+import useCreateUser from '../hooks/useCreateUser';
 
 const initialValues = {
   username: '',
   password: '',
+  rePassword: ''
 };
 
 const validationSchema = yup.object().shape({
@@ -24,6 +26,9 @@ const validationSchema = yup.object().shape({
     .required('Password is required'),
   rePassword: yup
     .string()
+    .oneOf([yup.ref('password'), null])
+    // .required('Password confirm is required')
+    
     // .min(1, 'Height must be greater or equal to 0.5')
     .required('Password confirmation is required'),
 });
@@ -53,7 +58,7 @@ export const SignInForm = ({onSubmit}) => {
   );
 };
 
-export const SignInContainer = ({onSubmit}) => {
+export const SignUpContainer = ({onSubmit}) => {
   return(
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
       {({ handleSubmit }) =><SignInForm onSubmit={handleSubmit} />}
@@ -61,25 +66,25 @@ export const SignInContainer = ({onSubmit}) => {
   );
 }
 
-const SignIn = () => {
-  const [signIn] = useSignIn();
+const SignUp = () => {
+  const [createUser] = useCreateUser();
   const history = useHistory();
 
   const onSubmit = async (values) => {
     const { username, password } = values;
 
     try {
-      const { data } = await signIn({ username, password });
-      console.log(data.authorize.accessToken);
-      history.push('/');
+      const { data } = await createUser({ username, password });
+      console.log("SIGNUP COMPONENT", data.createUser);
+      history.push('/signin');
     } catch (e) {
       console.log(e);
     }
   };
 
   return (
-    <SignInContainer onSubmit={onSubmit} />
+    <SignUpContainer onSubmit={onSubmit} />
   );
 };
 
-export default SignIn;
+export default SignUp;

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, StyleSheet, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import Constants from 'expo-constants';
 import theme from '../theme';
@@ -24,12 +24,16 @@ const AppBar = () => {
   const { data } = useQuery(AUTHORIZED_USER);
   const client = useApolloClient();
   const authStorage = useContext(AuthStorageContext);
-  const user = data ? data.authorizedUser: undefined;
+  const [user, setUser] = useState(data ? data.authorizedUser: undefined);
 
   const signOut = async () => {
     await authStorage.removeAccessToken();
     client.resetStore();
   };
+
+  useEffect(() => {
+    setUser(data ? data.authorizedUser: undefined);
+  }, [data])
 
   return (
   <View style={styles.container}>
@@ -46,10 +50,14 @@ const AppBar = () => {
       <Link to="/signin" component={TouchableWithoutFeedback} activeOpacity={0.8} onPress={signOut} >
         <Text h1 light p5>Sign out</Text>
       </Link>
-      </>:
+      </>:<>
+      <Link to="/signup" component={TouchableWithoutFeedback} activeOpacity={0.8} >
+        <Text h1 light p5>Sign up</Text>
+      </Link>
       <Link to="/signin" component={TouchableWithoutFeedback} activeOpacity={0.8} >
         <Text h1 light p5>Sign in</Text>
-      </Link>}
+      </Link>
+      </>}
       
       
     </ScrollView>
