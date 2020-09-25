@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, View, StyleSheet, SafeAreaView, Text } from 'react-native';
 import useRepositories from '../hooks/useRepositories';
 import RepositoryListItem from './RepositoryListItem';
 import RNPickerSelect from 'react-native-picker-select';
 import { Searchbar } from 'react-native-paper';
+import { useDebounce } from "use-debounce";
  
 const styles = StyleSheet.create({
   separator: {
@@ -12,17 +13,30 @@ const styles = StyleSheet.create({
 });
 
 const Dropdown = ({setSortBy}) => {
+  const [search, setSearch] = useState();
+  const [debouncedSearchTerm] = useDebounce(search, 1000);
+  
+  // Effect for API call 
+  useEffect(
+    () => {
+      if (debouncedSearchTerm && debouncedSearchTerm != '') {
+        setSortBy({ searchKeyword: debouncedSearchTerm })
+      }
+    }, [debouncedSearchTerm]);
+
     return (<>
       <Searchbar
         placeholder="Search"
+        onChangeText={v => setSearch(v) }
+        value={search}
       />
-        <RNPickerSelect
-            onValueChange={(value) => setSortBy(value)}
-            items={[
-                { label: 'Latest repositories', value: {orderBy: "CREATED_AT"} },
-                { label: 'Highest rated repositories', value: {orderBy: "RATING_AVERAGE", orderDirection: "DESC"} },
-                { label: 'Lowest rated repositories', value: {orderBy: "RATING_AVERAGE", orderDirection: "ASC"} },
-            ]}
+      <RNPickerSelect
+        onValueChange={(value) => setSortBy(value)}
+        items={[
+          { label: 'Latest repositories', value: {orderBy: "CREATED_AT"} },
+          { label: 'Highest rated repositories', value: {orderBy: "RATING_AVERAGE", orderDirection: "DESC"} },
+          { label: 'Lowest rated repositories', value: {orderBy: "RATING_AVERAGE", orderDirection: "ASC"} },
+        ]}
         />
         </>
     );
