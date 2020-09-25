@@ -1,13 +1,27 @@
 import React from 'react';
-import { FlatList, View, StyleSheet, SafeAreaView } from 'react-native';
+import { FlatList, View, StyleSheet, SafeAreaView, Text } from 'react-native';
 import useRepositories from '../hooks/useRepositories';
 import RepositoryListItem from './RepositoryListItem';
-
+import RNPickerSelect from 'react-native-picker-select';
+ 
 const styles = StyleSheet.create({
   separator: {
     height: 10,
   },
 });
+
+const Dropdown = () => {
+    return (
+        <RNPickerSelect
+            onValueChange={(value) => console.log(value)}
+            items={[
+                { label: 'Football', value: 'football' },
+                { label: 'Baseball', value: 'baseball' },
+                { label: 'Hockey', value: 'hockey' },
+            ]}
+        />
+    );
+};
 
 const ItemSeparator = () => <View style={styles.separator} />;
 const renderItem = (e) => <RepositoryListItem testID="item" repo={e} />;
@@ -24,6 +38,7 @@ export const RepositoryListContainer = ({ repositories }) => {
       ItemSeparatorComponent={ItemSeparator}
       renderItem={(e) => renderItem(e.item)}
       keyExtractor={e => e.id}
+      ListHeaderComponent={Dropdown}
     />
   );
 };
@@ -32,9 +47,9 @@ const RepositoryList = () => {
   const { repositories } = useRepositories();
 
   return (
-  <SafeAreaView>
+  <>
     <RepositoryListContainer repositories={repositories}/>
-  </SafeAreaView>
+  </>
   );
 };
 

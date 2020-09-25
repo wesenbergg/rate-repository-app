@@ -75,7 +75,7 @@ const SignUp = () => {
 
     try {
       const { data } = await createUser({ username, password });
-      console.log("SIGNUP COMPONENT", data.createUser);
+      // console.log("SIGNUP COMPONENT", data.createUser);
       history.push('/signin');
     } catch (e) {
       console.log(e);
