@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FlatList, View, StyleSheet, SafeAreaView, Text } from 'react-native';
 import useRepositories from '../hooks/useRepositories';
 import RepositoryListItem from './RepositoryListItem';
 import RNPickerSelect from 'react-native-picker-select';
+import { Searchbar } from 'react-native-paper';
  
 const styles = StyleSheet.create({
   separator: {
@@ -10,23 +11,27 @@ const styles = StyleSheet.create({
   },
 });
 
-const Dropdown = () => {
-    return (
+const Dropdown = ({setSortBy}) => {
+    return (<>
+      <Searchbar
+        placeholder="Search"
+      />
         <RNPickerSelect
-            onValueChange={(value) => console.log(value)}
+            onValueChange={(value) => setSortBy(value)}
             items={[
-                { label: 'Football', value: 'football' },
-                { label: 'Baseball', value: 'baseball' },
-                { label: 'Hockey', value: 'hockey' },
+                { label: 'Latest repositories', value: {orderBy: "CREATED_AT"} },
+                { label: 'Highest rated repositories', value: {orderBy: "RATING_AVERAGE", orderDirection: "DESC"} },
+                { label: 'Lowest rated repositories', value: {orderBy: "RATING_AVERAGE", orderDirection: "ASC"} },
             ]}
         />
+        </>
     );
 };
 
 const ItemSeparator = () => <View style={styles.separator} />;
 const renderItem = (e) => <RepositoryListItem testID="item" repo={e} />;
 
-export const RepositoryListContainer = ({ repositories }) => {
+export const RepositoryListContainer = ({ repositories, setSortBy }) => {
   const repositoryNodes = repositories
     ? repositories.edges.map((edge) => edge.node)
     : [];
@@ -38,17 +43,18 @@ export const RepositoryListContainer = ({ repositories }) => {
       ItemSeparatorComponent={ItemSeparator}
       renderItem={(e) => renderItem(e.item)}
       keyExtractor={e => e.id}
-      ListHeaderComponent={Dropdown}
+      ListHeaderComponent={() => <Dropdown setSortBy={setSortBy}/>}
     />
   );
 };
 
 const RepositoryList = () => {
-  const { repositories } = useRepositories();
+  const [ sortBy, setSortBy ] = useState({orderBy: "CREATED_AT"});
+  const { repositories } = useRepositories({...sortBy});
 
   return (
   <>
-    <RepositoryListContainer repositories={repositories}/>
+    <RepositoryListContainer repositories={repositories} setSortBy={setSortBy}/>
   </>
   );
 };
