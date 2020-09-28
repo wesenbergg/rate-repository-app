@@ -8,6 +8,7 @@ import RepositoryList from './RepositoryList';
 import SignIn from './SignIn';
 import NewReviewForm from './NewReviewForm';
 import SignUp from './SignUp';
+import MyReviews from './MyReviews';
 
 const styles = StyleSheet.create({
   container: {
@@ -45,6 +46,9 @@ const Main = () => {
         </Route>
         <Route path="/newReview" exact>
           <NewReviewForm />
+        </Route>
+        <Route path="/profile/reviews" exact>
+          <MyReviews />
         </Route>
         <Route path="/repo/:id">
           <SingleRepo />

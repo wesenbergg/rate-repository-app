@@ -38,6 +38,29 @@ query{
 }
 `;
 
+export const AUTHORIZED_USER_REVIEWS = gql`
+query{
+  authorizedUser {
+    id
+    username
+    reviews {
+      edges {
+        node {
+          id
+          rating
+          createdAt
+          text
+          repositoryId
+          repository{
+            url
+          }
+        }
+      }
+    }
+  }
+}
+`;
+
 export const GET_SINGLE_REPO = gql`
 query single($id: ID!, $first: Int, $after: String){
   repository(id: $id) {

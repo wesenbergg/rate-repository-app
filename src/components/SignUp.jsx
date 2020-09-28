@@ -52,7 +52,7 @@ export const SignInForm = ({onSubmit}) => {
       <FormikTextInput style={styles.input} name="password" placeholder="Password" secureTextEntry />
       <FormikTextInput style={styles.input} name="rePassword" placeholder="Confirm password" secureTextEntry />
       <TouchableOpacity style={styles.btn} onPress={onSubmit} activeOpacity={theme.buttons.activeOpacity} testID="submitButton">
-        <Text center h1 bold light>Sign In</Text>
+        <Text center h1 bold light>Sign Up</Text>
       </TouchableOpacity>
     </View>
   );
