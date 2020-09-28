@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Image, Button, TouchableOpacity, Linking, FlatList } from 'react-native';
+import React from 'react';
+import { View, StyleSheet, TouchableOpacity, Linking, FlatList } from 'react-native';
 import theme from '../theme';
 import Text from './Text';
 import formatDate from '../utils/dateFormattor';
@@ -7,7 +7,6 @@ import { useParams } from 'react-router-native';
 import { GET_SINGLE_REPO } from '../graphql/queries';
 import { useQuery } from '@apollo/react-hooks';
 import RepositoryListItem from './RepositoryListItem';
-import { date } from 'yup';
 
 const styles = StyleSheet.create({
   item: {
@@ -49,7 +48,7 @@ const Review = ({item}) => {
     );
 }
 
-const Reviews = ({reviews}) => {
+const Reviews = ({reviews, onEndReach}) => {
   // console.log(reviews);
   return(
     <FlatList
@@ -57,6 +56,8 @@ const Reviews = ({reviews}) => {
     renderItem={({ item }) => <Review item={item} />}
     keyExtractor={({ id }) => id}
     ItemSeparatorComponent={() => <View style={{height: 10}} />}
+    onEndReached={onEndReach}
+    onEndReachedThreshold={0.5}
     // ListHeaderComponent={() => <RepositoryInfo repository={repository} />}
     // ...
   />
@@ -65,31 +66,64 @@ const Reviews = ({reviews}) => {
 
 const SingleRepo = () => {
   const { id } = useParams();
-  const [ repo, setRepo ] = useState();
-  const { data } = useQuery(GET_SINGLE_REPO, {
-    fetchPolicy: 'cache-and-network',
-    variables: { id }
-  });
-  
-  useEffect(() => {
-    if(data) setRepo(data.repository)
-  }, [id, data]);
 
-  if(!repo) return <></>;
+  const variables = { id, first: 3 }
+
+  const { data, loading, fetchMore } = useQuery(GET_SINGLE_REPO, {
+    fetchPolicy: 'cache-and-network',
+    variables: { ...variables }
+  });
+
+  const onEndReach = () => {
+    // console.log("onEndReach called", loading);
+    const canFetchMore =
+      !loading && data && data.repository.reviews.pageInfo.hasNextPage;
+
+    if (!canFetchMore) {
+      return;
+    }
+    fetchMore({
+      query: GET_SINGLE_REPO,
+      variables: {
+        after: data.repository.reviews.pageInfo.endCursor,
+        ...variables,
+      },
+      updateQuery: (previousResult, { fetchMoreResult }) => {
+        // console.log("pre", previousResult.repository.reviews.edges.length);
+        // console.log("fetch", fetchMoreResult.repository.reviews.edges.length);
+        // console.log("pre", previousResult.repository.reviews.edges);
+        const nextResult = {
+          repository: {
+            ...previousResult.repository,
+            reviews: {
+              edges: [
+                ...previousResult.repository.reviews.edges,
+                ...fetchMoreResult.repository.reviews.edges,
+              ],
+              ...fetchMoreResult.repository.reviews,
+            }
+          },
+        };
+        // console.log(nextResult.repository.reviews.edges.length);
+        return nextResult;
+      },
+    });
+  };
+
+  if(!data || !data.repository) return <></>;
 
   return (
-    <View>
+    <>
       <View style={styles.item}>
-        <RepositoryListItem repo={repo} />
-        <TouchableOpacity onPress={() => Linking.openURL(repo.url)}>
+        <RepositoryListItem repo={data.repository} />
+        <TouchableOpacity onPress={() => Linking.openURL(data.repository.url)}>
           <Text style={{width: "100%", textAlign: "center", marginVertical: 10}} badge bold >
             Open in Github
           </Text>
         </TouchableOpacity>
       </View>
-      <Reviews reviews={repo.reviews.edges} />
-    </View>
-  
+      <Reviews reviews={data.repository.reviews.edges} onEndReach={onEndReach}/>
+    </>
   );
 };
 

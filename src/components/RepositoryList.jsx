@@ -20,7 +20,7 @@ const Dropdown = ({setSortBy}) => {
   useEffect(
     () => {
       if (debouncedSearchTerm && debouncedSearchTerm != '') {
-        setSortBy({ searchKeyword: debouncedSearchTerm })
+        setSortBy({ searchKeyword: debouncedSearchTerm, first: 8 })
       }
     }, [debouncedSearchTerm]);
 
@@ -34,8 +34,8 @@ const Dropdown = ({setSortBy}) => {
         onValueChange={(value) => setSortBy(value)}
         items={[
           { label: 'Latest repositories', value: {orderBy: "CREATED_AT"} },
-          { label: 'Highest rated repositories', value: {orderBy: "RATING_AVERAGE", orderDirection: "DESC"} },
-          { label: 'Lowest rated repositories', value: {orderBy: "RATING_AVERAGE", orderDirection: "ASC"} },
+          { label: 'Highest rated repositories', value: {orderBy: "RATING_AVERAGE", orderDirection: "DESC", first: 8} },
+          { label: 'Lowest rated repositories', value: {orderBy: "RATING_AVERAGE", orderDirection: "ASC", first: 8} },
         ]}
         />
         </>
@@ -45,7 +45,7 @@ const Dropdown = ({setSortBy}) => {
 const ItemSeparator = () => <View style={styles.separator} />;
 const renderItem = (e) => <RepositoryListItem testID="item" repo={e} />;
 
-export const RepositoryListContainer = ({ repositories, setSortBy }) => {
+export const RepositoryListContainer = ({ repositories, setSortBy, onEndReach }) => {
   const repositoryNodes = repositories
     ? repositories.edges.map((edge) => edge.node)
     : [];
@@ -58,17 +58,23 @@ export const RepositoryListContainer = ({ repositories, setSortBy }) => {
       renderItem={(e) => renderItem(e.item)}
       keyExtractor={e => e.id}
       ListHeaderComponent={() => <Dropdown setSortBy={setSortBy}/>}
+      onEndReached={onEndReach}
+      onEndReachedThreshold={0.5}
     />
   );
 };
 
 const RepositoryList = () => {
-  const [ sortBy, setSortBy ] = useState({orderBy: "CREATED_AT"});
-  const { repositories } = useRepositories({...sortBy});
+  const [ sortBy, setSortBy ] = useState({orderBy: "CREATED_AT", first: 8});
+  const { repositories, fetchMore } = useRepositories({...sortBy});
+
+  const onEndReach = () => {
+    fetchMore();
+  };
 
   return (
   <>
-    <RepositoryListContainer repositories={repositories} setSortBy={setSortBy}/>
+    <RepositoryListContainer onEndReach={onEndReach} repositories={repositories} setSortBy={setSortBy}/>
   </>
   );
 };
